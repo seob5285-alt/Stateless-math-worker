@@ -1,0 +1,8 @@
+{
+  "mcpName": "io.github.seob5285-alt/Stateless-math-worker",
+  "description": "Stateless array aggregation utility engine via x402 microtransactions.",
+  "transport": {
+    "type": "http",
+    "url": "https://stateless-math-worker.seob5285.workers.dev/aggregate"
+  }
+}

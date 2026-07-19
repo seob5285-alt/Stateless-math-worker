@@ -1,0 +1,112 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Stateless Math & Array Aggregation Engine",
+    "description": "High-volume, deterministic mathematical cleaning and key-based array aggregation for autonomous AI agents. Features stateless x402 micro-payment authorization.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://stateless-math-worker.seob5285.workers.dev",
+      "description": "Production Cloudflare Edge Server"
+    }
+  ],
+  "paths": {
+    "/aggregate": {
+      "post": {
+        "summary": "Clean and aggregate noisy metrics streams",
+        "description": "Parses unformatted string values (e.g. '$1,200.50px') into deterministic floats, runs matrix metrics, and optionally groups outputs by arbitrary keys.",
+        "operationId": "aggregateData",
+        "parameters": [
+          {
+            "name": "X-Payment-Proof",
+            "in": "header",
+            "required": false,
+            "description": "The active x402 cryptographic receipt or signature proving micro-USDC payment.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["data", "targetKey"],
+                "properties": {
+                  "data": {
+                    "type": "array",
+                    "description": "The raw payload array containing the objects to be parsed.",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "targetKey": {
+                    "type": "string",
+                    "description": "The specific internal object key housing the metric string or float to evaluate."
+                  },
+                  "groupBy": {
+                    "type": "array",
+                    "description": "Optional array of string metadata keys to dynamically group final metrics by.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Computation completed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "metrics": {
+                      "type": "object",
+                      "properties": {
+                        "totalSum": { "type": "number" },
+                        "recordCount": { "type": "number" },
+                        "average": { "type": "number" },
+                        "min": { "type": "number" },
+                        "max": { "type": "number" }
+                      }
+                    },
+                    "breakdown": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required via MoltPe x402 Handshake Layer.",
+            "headers": {
+              "X-Payment-Required": {
+                "schema": { "type": "string" },
+                "description": "Base64 encoded JSON instruction challenge containing target wallet, token details, and micro-USDC requirements."
+              },
+              "X-Payment-Amount": {
+                "schema": { "type": "string" },
+                "description": "Required micro-USDC asset units (1000 = $0.001 USD)."
+              },
+              "X-Payment-Recipient": {
+                "schema": { "type": "string" },
+                "description": "The target MoltPe collection merchant address."
+              },
+              "X-Payment-Network": {
+                "schema": { "type": "string" },
+                "description": "The settlement blockchain network layer (base)."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
