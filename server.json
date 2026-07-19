@@ -1,5 +1,5 @@
 {
-  "$schema": "https://modelcontextprotocol.io/schema/2025-12-11/server.schema.json",
+  "$schema": "https://modelcontextprotocol.io/schema/server.json",
   "name": "io.github.seob5285-alt/stateless-math-worker",
   "version": "1.0.0",
   "description": "Stateless array aggregation utility engine via x402 microtransactions.",
